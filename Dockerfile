@@ -3,7 +3,8 @@ FROM ubuntu:latest
 COPY entrypoint.sh /entrypoint.sh
 
 RUN apt update && \
-    apt install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
+        tzdata \
         ca-certificates \
         git \
         libatomic1 \
