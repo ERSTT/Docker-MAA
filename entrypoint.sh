@@ -1,24 +1,22 @@
 #!/bin/bash
 set -eu
 
+VERSION=$(curl -s https://api.github.com/repos/MaaAssistantArknights/maa-cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
 # Detect system architecture
 ARCH=$(uname -m)
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+PLATFORM="unknown-linux-gnu"
 
 echo "Target System: ${OS}-${ARCH}"
 
-# Set download URL based on architecture (Linux only)
-if [[ "$OS" == "linux" ]]; then
-    if [[ "$ARCH" == "x86_64" ]]; then
-        MAA_URL="https://github.com/MaaAssistantArknights/maa-cli/releases/latest/download/maa_cli-x86_64-unknown-linux-gnu.tar.gz"
-    elif [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
-        MAA_URL="https://github.com/MaaAssistantArknights/maa-cli/releases/latest/download/maa_cli-aarch64-unknown-linux-gnu.tar.gz"
-    else
-        echo "Error: Unsupported Linux architecture: ${ARCH}"
-        exit 1
-    fi
+# Set download URL based on architecture
+if [[ "$ARCH" == "x86_64" ]]; then
+    MAA_URL="https://github.com/MaaAssistantArknights/maa-cli/releases/download/${VERSION}/maa_cli-${VERSION}-x86_64-${PLATFORM}.tar.gz"
+elif [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
+    MAA_URL="https://github.com/MaaAssistantArknights/maa-cli/releases/download/${VERSION}/maa_cli-${VERSION}-aarch64-${PLATFORM}.tar.gz"
 else
-    echo "Error: This script is designed for Linux only. Current OS: ${OS}"
+    echo "Error: Unsupported architecture: ${ARCH}"
     exit 1
 fi
 
